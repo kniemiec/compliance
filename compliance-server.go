@@ -1,35 +1,27 @@
 package main
 
-import (	
+import (
+	"fmt"
 	"net/http"
-
     "github.com/gin-gonic/gin"
 )
 
-type ComplianceCheckRequest struct {
-	transferId string `json:"transferId"`
-	// senderData UserData 'json:"senderData"'
-	// receiverData UserData 'json:"receiverData"'
-}
 
-type ComplianceCheckResponse struct {
-	transferId string `json:"transferId"`
-	// senderData UserData 'json:"senderData"'
-	// receiverData UserData 'json:"receiverData"'
-}
+func getComplianceStatus(c *gin.Context){
+	var request ComplianceCheckRequest
+    if err := c.BindJSON(&request); err != nil {
+        c.String(http.StatusBadRequest, "Invalid request")
+    }	
 
-var status = ComplianceCheckRequest {
-	transferId: "1",}
-
-func getComplianceStatus(c * gin.Context){
-	c.IndentedJSON(http.StatusOK, status)
+	var complianceService ComplinaceDomainLogic = ComplianceServiceImpl { }
+	response := complianceService.check(request)
+	fmt.Println(response)	
+	c.JSON(http.StatusOK, response)
 }
 
 
 func main() {
 	router := gin.Default()
-	router.GET("complianceStatus", getComplianceStatus)
-
-	router.Run("localhost:8888")
-
+	router.PUT("/checkCompliance", getComplianceStatus)
+	router.Run("localhost:8092")
 }
