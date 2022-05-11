@@ -23,5 +23,5 @@ func getComplianceStatus(c *gin.Context){
 func main() {
 	router := gin.Default()
 	router.PUT("/checkCompliance", getComplianceStatus)
-	router.Run("localhost:8092")
+	router.Run(":8092")
 }
