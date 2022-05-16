@@ -1,4 +1,4 @@
-module mymodules/compliance
+module assignement/mod
 
 go 1.18
 
