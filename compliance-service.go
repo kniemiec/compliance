@@ -5,40 +5,34 @@ type ComplinaceDomainLogic interface {
 }
 
 type ComplianceServiceImpl struct {
+	repository ComplianceRepository
 }
 
 type SanctionedUser struct {
-	lastname string
-	surname  string
-}
-
-var sanctionedUsers = []SanctionedUser{
-	{lastname: "Jan", surname: "Kowalski"},
-	{lastname: "Andrzej", surname: "Nowak"},
+	name    string
+	surname string
 }
 
 func (service ComplianceServiceImpl) check(request ComplianceCheckRequest) ComplianceCheckResponse {
 	response := ComplianceCheckResponse{}
 	problemsDetected := false
 	response.TransferId = request.TransferId
-	for _, user := range sanctionedUsers {
-		if user.lastname == request.SenderData.Lastname && user.surname == request.SenderData.Surname {
-			response.SenderStatus = append(response.SenderStatus, ComplianceProblem{ProblemId: "1", ProblemDescription: "User on sanctions list"})
-			problemsDetected = true
-		}
-		if user.lastname == request.ReceiverData.Lastname && user.surname == request.ReceiverData.Surname {
-			response.ReceiverStatus = append(response.ReceiverStatus, ComplianceProblem{ProblemId: "1", ProblemDescription: "User on sanctions list"})
-			problemsDetected = true
-		}
+	senders := service.repository.findByNameAndLastName(request.SenderData.Surname, request.SenderData.Name)
+	receivers := service.repository.findByNameAndLastName(request.ReceiverData.Surname, request.ReceiverData.Name)
+
+	if len(senders) > 0 {
+		response.SenderStatus = append(response.SenderStatus, ComplianceProblem{ProblemId: "1", ProblemDescription: "User on sanctions list"})
+		problemsDetected = true
 	}
+	if len(receivers) > 0 {
+		response.ReceiverStatus = append(response.ReceiverStatus, ComplianceProblem{ProblemId: "1", ProblemDescription: "User on sanctions list"})
+		problemsDetected = true
+	}
+
 	if problemsDetected {
 		response.Status = "ALERT"
 	} else {
 		response.Status = "OK"
 	}
 	return response
-}
-
-func test() int {
-	return 5
 }
