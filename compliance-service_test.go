@@ -5,20 +5,6 @@ import (
 	"testing"
 )
 
-type MockRepository struct {
-}
-
-func (repository *MockRepository) findByNameAndLastName(lastName string, name string) []SanctionedUser {
-	var result []SanctionedUser
-	user := SanctionedUser{surname: "Nowak", name: "Andrzej"}
-	if lastName == user.surname && name == user.name {
-		result = append(result, user)
-	}
-	return result
-}
-
-func (repository *MockRepository) initializeRepository() {}
-
 func TestGetComplianceStatusWhenSanctionedUsersFound(t *testing.T) {
 	assert := assert.New(t)
 	request := ComplianceCheckRequest{
