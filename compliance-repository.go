@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const MONGO_DB_URI = "mongodb://root:example@localhost:27017"
+const MONGO_DB_URI = os.Getenv("MONGO_URL") // "mongodb://root:example@localhost:27017"
 const MONGO_DB_NAME = "compliancedb"
 const BLACKLISTED_USERS_COLLECTION = "blaclistedUsers"
 
